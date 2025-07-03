@@ -84,7 +84,7 @@ var BatchRequestManager = class {
         if (!(result instanceof Map)) {
           throw new Error("processBatch must return a Map");
         }
-        for (const { key, resolve, reject } of batch) {
+        for (const { key, resolve } of batch) {
           resolve(result.get(key) ?? null);
         }
       } catch (err) {
