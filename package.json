@@ -1,0 +1,47 @@
+{
+	"name": "batch-process-manager",
+	"version": "0.0.1",
+	"description": "A TypeScript library for efficiently batching and processing requests with configurable concurrency limits, batch sizes, and timeouts.",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"scripts": {
+		"dev": "tsx --watch src/index.ts",
+		"build": "rm -rf dist && tsup src/index.ts --format esm --dts",
+		"build:watch": "rm -rf dist && tsup src/index.ts --watch --format esm --dts",
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:run": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"release": "npm run build && npm publish"
+	},
+	"files": [
+		"dist"
+	],
+	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/lacherogwu/batch-process-manager.git"
+	},
+	"author": "LacheRo`",
+	"license": "MIT",
+	"packageManager": "pnpm@10.10.0",
+	"type": "module",
+	"dependencies": {
+		"p-limit": "^6.2.0"
+	},
+	"devDependencies": {
+		"@types/node": "^24.0.10",
+		"@vitest/ui": "^3.2.4",
+		"tsup": "^8.5.0",
+		"tsx": "^4.20.3",
+		"typescript": "^5.8.3",
+		"vitest": "^3.2.4"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}
