@@ -1,6 +1,6 @@
 // src/index.ts
 import pLimit from "p-limit";
-var BatchRequestManager = class {
+var BatchManager = class {
   batchSize = 20;
   batchTimeout = 1e3;
   currentBatch = [];
@@ -8,7 +8,7 @@ var BatchRequestManager = class {
   processBatch;
   limit;
   /**
-   * Creates a new BatchRequestManager instance.
+   * Creates a new BatchManager instance.
    *
    * @param opts - Configuration options for the batch manager
    * @param opts.processBatch - Function that processes a batch of keys and returns a Map of results
@@ -99,8 +99,8 @@ var BatchRequestManager = class {
     });
   }
 };
-var index_default = BatchRequestManager;
+var index_default = BatchManager;
 export {
-  BatchRequestManager,
+  BatchManager,
   index_default as default
 };

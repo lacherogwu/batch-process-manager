@@ -2,7 +2,7 @@ import pLimit, { type LimitFunction } from 'p-limit';
 
 type ValueOf<T> = T extends Map<string, infer V> ? V : never;
 type ProcessBatchFn = (batchKeys: string[]) => Promise<Map<string, any>>;
-type BatchRequestManagerOpts<T extends ProcessBatchFn> = {
+type BatchManagerOpts<T extends ProcessBatchFn> = {
 	/**
 	 * The maximum number of requests to process in parallel.
 	 * @default 20
@@ -22,7 +22,7 @@ type BatchRequestManagerOpts<T extends ProcessBatchFn> = {
 };
 
 /**
- * BatchRequestManager efficiently batches and processes requests with configurable
+ * BatchManager efficiently batches and processes requests with configurable
  * concurrency limits, batch sizes, and timeouts.
  *
  * This class collects individual requests into batches and processes them together
@@ -34,7 +34,7 @@ type BatchRequestManagerOpts<T extends ProcessBatchFn> = {
  * @example
  * ```typescript
  * // Create a batch manager for API requests
- * const batchManager = new BatchRequestManager({
+ * const batchManager = new BatchManager({
  *   processBatch: async (productIds) => {
  *     // Make a single API call for multiple products
  *     const response = await fetch('/api/products', {
@@ -67,7 +67,7 @@ type BatchRequestManagerOpts<T extends ProcessBatchFn> = {
  * const products = await Promise.all(promises);
  * ```
  */
-export class BatchRequestManager<T extends ProcessBatchFn> {
+export class BatchManager<T extends ProcessBatchFn> {
 	private batchSize: number = 20;
 	private batchTimeout: number = 1000;
 	private currentBatch: { key: string; resolve: (value: unknown) => void; reject: (reason?: any) => void }[] = [];
@@ -76,7 +76,7 @@ export class BatchRequestManager<T extends ProcessBatchFn> {
 	private limit: LimitFunction;
 
 	/**
-	 * Creates a new BatchRequestManager instance.
+	 * Creates a new BatchManager instance.
 	 *
 	 * @param opts - Configuration options for the batch manager
 	 * @param opts.processBatch - Function that processes a batch of keys and returns a Map of results
@@ -84,7 +84,7 @@ export class BatchRequestManager<T extends ProcessBatchFn> {
 	 * @param opts.batchTimeout - Time in milliseconds to wait before processing an incomplete batch (default: 1000)
 	 * @param opts.concurrency - Maximum number of batch operations to run in parallel (default: Infinity)
 	 */
-	constructor(opts: BatchRequestManagerOpts<T>) {
+	constructor(opts: BatchManagerOpts<T>) {
 		this.batchSize = opts?.batchSize ?? 20;
 		if (this.batchSize <= 0) {
 			throw new Error('batchSize must be greater than 0');
@@ -178,4 +178,4 @@ export class BatchRequestManager<T extends ProcessBatchFn> {
 	}
 }
 
-export default BatchRequestManager;
+export default BatchManager;

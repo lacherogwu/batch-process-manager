@@ -1,4 +1,4 @@
-# Batch Request Manager
+# Batch Process Manager
 
 A TypeScript library for efficiently batching and processing requests with configurable concurrency limits, batch sizes, and timeouts.
 
@@ -30,10 +30,10 @@ npm i https://github.com/lacherogwu/batch-process-manager
 ### Basic Example
 
 ```typescript
-import { BatchRequestManager } from 'batch-process-manager';
+import { BatchManager } from 'batch-process-manager';
 
 // Create a batch manager
-const batchManager = new BatchRequestManager({
+const batchManager = new BatchManager({
 	processBatch: async batchKeys => {
 		// Your batch processing logic here
 		// This should return a Map where keys match the input keys
@@ -61,10 +61,10 @@ console.log(result);
 ### Advanced Example
 
 ```typescript
-import { BatchRequestManager } from 'batch-process-manager';
+import { BatchManager } from 'batch-process-manager';
 
 // Example: Batch API requests for product data
-const productBatchManager = new BatchRequestManager({
+const productBatchManager = new BatchManager({
 	processBatch: async productIds => {
 		// Make a single API call for multiple products
 		const response = await fetch('/api/products', {
@@ -99,7 +99,7 @@ console.log(`Fetched ${products.length} products`);
 
 ## Configuration Options
 
-### `BatchRequestManagerOpts<T>`
+### `BatchManagerOpts<T>`
 
 | Option         | Type                                                 | Default      | Description                                                          |
 | -------------- | ---------------------------------------------------- | ------------ | -------------------------------------------------------------------- |
@@ -145,7 +145,7 @@ The library provides full TypeScript support with proper generic types:
 ```typescript
 type MyDataType = { id: string; name: string; price: number };
 
-const typedBatchManager = new BatchRequestManager({
+const typedBatchManager = new BatchManager({
 	processBatch: async (keys: string[]): Promise<Map<string, MyDataType>> => {
 		// Implementation here
 		return new Map();

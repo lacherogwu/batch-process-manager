@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { BatchRequestManager } from '../src/index.js';
+import { BatchManager } from '../src/index.js';
 
-describe('BatchRequestManager', () => {
-	let batchManager: BatchRequestManager<any>;
+describe('BatchManager', () => {
+	let batchManager: BatchManager<any>;
 	let mockProcessBatch: ReturnType<typeof vi.fn>;
 
 	beforeEach(() => {
@@ -10,7 +10,7 @@ describe('BatchRequestManager', () => {
 		vi.useFakeTimers();
 
 		mockProcessBatch = vi.fn();
-		batchManager = new BatchRequestManager({
+		batchManager = new BatchManager({
 			processBatch: mockProcessBatch,
 			batchSize: 3,
 			batchTimeout: 1000,
@@ -24,7 +24,7 @@ describe('BatchRequestManager', () => {
 
 	describe('constructor', () => {
 		it('should initialize with default values', () => {
-			const manager = new BatchRequestManager({
+			const manager = new BatchManager({
 				processBatch: vi.fn(),
 			});
 
@@ -33,7 +33,7 @@ describe('BatchRequestManager', () => {
 
 		it('should initialize with custom values', () => {
 			const processBatch = vi.fn();
-			const manager = new BatchRequestManager({
+			const manager = new BatchManager({
 				processBatch,
 				batchSize: 5,
 				batchTimeout: 500,
@@ -281,7 +281,7 @@ describe('BatchRequestManager', () => {
 				return result;
 			});
 
-			const manager = new BatchRequestManager({
+			const manager = new BatchManager({
 				processBatch: slowProcessBatch,
 				batchSize: 2,
 				batchTimeout: 1000,
@@ -350,7 +350,7 @@ describe('BatchRequestManager', () => {
 		});
 
 		it('should handle very large batch sizes', async () => {
-			const largeManager = new BatchRequestManager({
+			const largeManager = new BatchManager({
 				processBatch: vi.fn().mockImplementation(async (keys: string[]) => {
 					const result = new Map();
 					keys.forEach(key => result.set(key, `value-${key}`));
@@ -383,7 +383,7 @@ describe('BatchRequestManager', () => {
 				return result;
 			});
 
-			const typedManager = new BatchRequestManager({
+			const typedManager = new BatchManager({
 				processBatch: typedProcessBatch,
 				batchSize: 2,
 			});
@@ -426,7 +426,7 @@ describe('BatchRequestManager', () => {
 				return result;
 			});
 
-			const apiManager = new BatchRequestManager({
+			const apiManager = new BatchManager({
 				processBatch: apiProcessBatch,
 				batchSize: 5,
 				batchTimeout: 200,
@@ -468,7 +468,7 @@ describe('BatchRequestManager', () => {
 				return result;
 			});
 
-			const dbManager = new BatchRequestManager({
+			const dbManager = new BatchManager({
 				processBatch: dbProcessBatch,
 				batchSize: 10,
 				batchTimeout: 100,
@@ -488,7 +488,7 @@ describe('BatchRequestManager', () => {
 	describe('additional edge cases', () => {
 		it('should throw error for zero batch size', async () => {
 			expect(() => {
-				new BatchRequestManager({
+				new BatchManager({
 					processBatch: vi.fn().mockResolvedValue(new Map([['key1', 'value1']])),
 					batchSize: 0,
 					batchTimeout: 100,
@@ -498,7 +498,7 @@ describe('BatchRequestManager', () => {
 
 		it('should throw error for negative batch size', async () => {
 			expect(() => {
-				new BatchRequestManager({
+				new BatchManager({
 					processBatch: vi.fn().mockResolvedValue(new Map([['key1', 'value1']])),
 					batchSize: -5,
 					batchTimeout: 100,
@@ -507,7 +507,7 @@ describe('BatchRequestManager', () => {
 		});
 
 		it('should handle zero timeout by processing immediately', async () => {
-			const zeroTimeoutManager = new BatchRequestManager({
+			const zeroTimeoutManager = new BatchManager({
 				processBatch: vi.fn().mockResolvedValue(new Map([['key1', 'value1']])),
 				batchSize: 10,
 				batchTimeout: 0,
@@ -552,7 +552,7 @@ describe('BatchRequestManager', () => {
 				]),
 			);
 
-			const invalidManager = new BatchRequestManager({
+			const invalidManager = new BatchManager({
 				processBatch: invalidProcessBatch,
 				batchSize: 2,
 			});
@@ -582,7 +582,7 @@ describe('BatchRequestManager', () => {
 		it('should throw error when processBatch returns non-Map', async () => {
 			const invalidProcessBatch = vi.fn().mockResolvedValue({ key1: 'value1' }); // Not a Map
 
-			const invalidManager = new BatchRequestManager({
+			const invalidManager = new BatchManager({
 				processBatch: invalidProcessBatch as any,
 				batchSize: 2,
 			});
