@@ -1,6 +1,6 @@
 # Batch Process Manager
 
-A TypeScript library for efficiently batching and processing requests with configurable concurrency limits, batch sizes, and timeouts.
+Batch multiple requests together with configurable timeouts and concurrency limits to optimize API calls and database queries.
 
 ## Features
 

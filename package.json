@@ -1,7 +1,7 @@
 {
 	"name": "batch-process-manager",
-	"version": "0.0.6",
-	"description": "TypeScript library for batching requests with configurable timeouts and concurrency limits.",
+	"version": "0.0.7",
+	"description": "Batch multiple requests together with configurable timeouts and concurrency limits to optimize API calls and database queries.",
 	"exports": {
 		".": {
 			"import": "./dist/index.js",
