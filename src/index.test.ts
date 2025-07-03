@@ -120,7 +120,7 @@ describe('BatchManager', () => {
 			expect(secondResults).toEqual(['value4', 'value5']);
 		});
 
-		it('should return null for keys not found in result', async () => {
+		it('should return undefined for keys not found in result', async () => {
 			const mockResult = new Map([
 				['key1', 'value1'],
 				// key2 is missing
@@ -134,7 +134,7 @@ describe('BatchManager', () => {
 			vi.advanceTimersByTime(1000);
 
 			await expect(promise1).resolves.toBe('value1');
-			await expect(promise2).resolves.toBe(null);
+			await expect(promise2).resolves.toBe(undefined);
 		});
 
 		it('should reject all requests in batch when processBatch throws an error', async () => {
@@ -208,7 +208,7 @@ describe('BatchManager', () => {
 
 			// Both requests should be processed in the same batch
 			await expect(promise).resolves.toBe('value1');
-			await expect(promise2).resolves.toBe(null);
+			await expect(promise2).resolves.toBe(undefined);
 
 			// Verify they were processed in a single batch
 			expect(mockProcessBatch).toHaveBeenCalledOnce();
@@ -324,7 +324,7 @@ describe('BatchManager', () => {
 			// Advance time to trigger timeout processing
 			vi.advanceTimersByTime(1000);
 
-			await expect(promise).resolves.toBe(null);
+			await expect(promise).resolves.toBe(undefined);
 		});
 
 		it('should handle processBatch returning null/undefined values', async () => {
@@ -345,8 +345,8 @@ describe('BatchManager', () => {
 
 			const results = await Promise.all(promises);
 
-			// Note: undefined values from processBatch are converted to null by the nullish coalescing operator
-			expect(results).toEqual([null, null, '', 0, false]);
+			// Note: undefined values from processBatch are now preserved as undefined
+			expect(results).toEqual([null, undefined, '', 0, false]);
 		});
 
 		it('should handle very large batch sizes', async () => {

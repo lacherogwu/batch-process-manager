@@ -89,7 +89,7 @@ declare class BatchManager<T extends ProcessBatchFn> {
      * - The `batchTimeout` expires
      *
      * @param key - The key to retrieve data for
-     * @returns A promise that resolves with the data for the given key, or null if the key is not found
+     * @returns A promise that resolves with the data for the given key, or undefined if the key is not found
      *
      * @example
      * ```typescript
@@ -102,7 +102,7 @@ declare class BatchManager<T extends ProcessBatchFn> {
      * const users = await Promise.all(promises);
      * ```
      */
-    get(key: string): Promise<ValueOf<Awaited<ReturnType<T>>> | null>;
+    get(key: string): Promise<ValueOf<Awaited<ReturnType<T>>> | undefined>;
     private resetBatchTimeout;
     private _processBatch;
 }

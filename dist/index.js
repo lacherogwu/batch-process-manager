@@ -35,7 +35,7 @@ var BatchManager = class {
    * - The `batchTimeout` expires
    *
    * @param key - The key to retrieve data for
-   * @returns A promise that resolves with the data for the given key, or null if the key is not found
+   * @returns A promise that resolves with the data for the given key, or undefined if the key is not found
    *
    * @example
    * ```typescript
@@ -85,7 +85,7 @@ var BatchManager = class {
           throw new Error("processBatch must return a Map");
         }
         for (const { key, resolve } of batch) {
-          resolve(result.get(key) ?? null);
+          resolve(result.get(key));
         }
       } catch (err) {
         for (const { reject } of batch) {

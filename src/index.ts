@@ -104,7 +104,7 @@ export class BatchManager<T extends ProcessBatchFn> {
 	 * - The `batchTimeout` expires
 	 *
 	 * @param key - The key to retrieve data for
-	 * @returns A promise that resolves with the data for the given key, or null if the key is not found
+	 * @returns A promise that resolves with the data for the given key, or undefined if the key is not found
 	 *
 	 * @example
 	 * ```typescript
@@ -117,7 +117,7 @@ export class BatchManager<T extends ProcessBatchFn> {
 	 * const users = await Promise.all(promises);
 	 * ```
 	 */
-	async get(key: string): Promise<ValueOf<Awaited<ReturnType<T>>> | null> {
+	async get(key: string): Promise<ValueOf<Awaited<ReturnType<T>>> | undefined> {
 		const promise = new Promise((resolve, reject) => {
 			this.currentBatch.push({ key, resolve, reject });
 
@@ -130,7 +130,7 @@ export class BatchManager<T extends ProcessBatchFn> {
 			}
 		});
 
-		return promise as Promise<ValueOf<Awaited<ReturnType<T>>> | null>;
+		return promise as Promise<ValueOf<Awaited<ReturnType<T>>> | undefined>;
 	}
 
 	private resetBatchTimeout(): void {
@@ -163,7 +163,7 @@ export class BatchManager<T extends ProcessBatchFn> {
 					throw new Error('processBatch must return a Map');
 				}
 				for (const { key, resolve } of batch) {
-					resolve(result.get(key) ?? null);
+					resolve(result.get(key));
 				}
 			} catch (err) {
 				for (const { reject } of batch) {
