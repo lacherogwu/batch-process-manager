@@ -1,7 +1,8 @@
 {
 	"name": "batch-process-manager",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"description": "Batch multiple requests together with configurable timeouts and concurrency limits to optimize API calls and database queries.",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"import": "./dist/index.js",
