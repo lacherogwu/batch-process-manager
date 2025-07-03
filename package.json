@@ -1,6 +1,6 @@
 {
 	"name": "batch-process-manager",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "A TypeScript library for efficiently batching and processing requests with configurable concurrency limits, batch sizes, and timeouts.",
 	"exports": {
 		".": {
@@ -21,7 +21,26 @@
 	"files": [
 		"dist"
 	],
-	"keywords": [],
+	"keywords": [
+		"batch",
+		"batch-processing",
+		"request-batching",
+		"concurrency",
+		"rate-limiting",
+		"performance",
+		"optimization",
+		"async",
+		"promise",
+		"throttling",
+		"debouncing",
+		"queue",
+		"typescript",
+		"api",
+		"database",
+		"caching",
+		"bulk-operations",
+		"performance-optimization"
+	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/lacherogwu/batch-process-manager.git"
