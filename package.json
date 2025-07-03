@@ -1,6 +1,6 @@
 {
 	"name": "batch-process-manager",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "A TypeScript library for efficiently batching and processing requests with configurable concurrency limits, batch sizes, and timeouts.",
 	"exports": {
 		".": {

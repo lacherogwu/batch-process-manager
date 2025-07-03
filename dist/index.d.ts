@@ -1,3 +1,4 @@
+type ValueOf<T> = T extends Map<string, infer V> ? V : never;
 type ProcessBatchFn = (batchKeys: string[]) => Promise<Map<string, any>>;
 type BatchRequestManagerOpts<T extends ProcessBatchFn> = {
     /**
@@ -88,8 +89,7 @@ declare class BatchRequestManager<T extends ProcessBatchFn> {
      * - The `batchTimeout` expires
      *
      * @param key - The key to retrieve data for
-     * @returns A promise that resolves with the data for the given key
-     * @throws {Error} If the key is not found in the batch processing result
+     * @returns A promise that resolves with the data for the given key, or null if the key is not found
      *
      * @example
      * ```typescript
@@ -102,7 +102,7 @@ declare class BatchRequestManager<T extends ProcessBatchFn> {
      * const users = await Promise.all(promises);
      * ```
      */
-    get(key: string): Promise<Awaited<ReturnType<T>>[keyof Awaited<ReturnType<T>>]>;
+    get(key: string): Promise<ValueOf<Awaited<ReturnType<T>>> | null>;
     private resetBatchTimeout;
     private _processBatch;
 }

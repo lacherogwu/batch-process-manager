@@ -125,11 +125,14 @@ console.log(`Fetched ${products.length} products`);
 
 ## Error Handling
 
-If the `processBatch` function throws an error, all requests in that batch will be rejected with the same error. If a specific key is not found in the returned Map, that individual request will be rejected with a "No data found" error.
+If the `processBatch` function throws an error, all requests in that batch will be rejected with the same error. If a specific key is not found in the returned Map, that individual request will resolve with `null`.
 
 ```typescript
 try {
 	const result = await batchManager.get('non-existent-key');
+	if (result === null) {
+		console.log('Key not found, but no error thrown');
+	}
 } catch (error) {
 	console.error('Request failed:', error.message);
 }

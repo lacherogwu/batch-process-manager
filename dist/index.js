@@ -35,8 +35,7 @@ var BatchRequestManager = class {
    * - The `batchTimeout` expires
    *
    * @param key - The key to retrieve data for
-   * @returns A promise that resolves with the data for the given key
-   * @throws {Error} If the key is not found in the batch processing result
+   * @returns A promise that resolves with the data for the given key, or null if the key is not found
    *
    * @example
    * ```typescript
@@ -82,13 +81,11 @@ var BatchRequestManager = class {
     this.limit(async () => {
       try {
         const result = await this.processBatch(batchKeys);
+        if (!(result instanceof Map)) {
+          throw new Error("processBatch must return a Map");
+        }
         for (const { key, resolve, reject } of batch) {
-          if (result.has(key)) {
-            const data = result.get(key);
-            resolve(data);
-          } else {
-            reject(new Error(`No data found for key: ${key}`));
-          }
+          resolve(result.get(key) ?? null);
         }
       } catch (err) {
         for (const { reject } of batch) {

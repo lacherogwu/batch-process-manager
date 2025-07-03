@@ -1,5 +1,6 @@
 import pLimit, { type LimitFunction } from 'p-limit';
 
+type ValueOf<T> = T extends Map<string, infer V> ? V : never;
 type ProcessBatchFn = (batchKeys: string[]) => Promise<Map<string, any>>;
 type BatchRequestManagerOpts<T extends ProcessBatchFn> = {
 	/**
@@ -103,8 +104,7 @@ export class BatchRequestManager<T extends ProcessBatchFn> {
 	 * - The `batchTimeout` expires
 	 *
 	 * @param key - The key to retrieve data for
-	 * @returns A promise that resolves with the data for the given key
-	 * @throws {Error} If the key is not found in the batch processing result
+	 * @returns A promise that resolves with the data for the given key, or null if the key is not found
 	 *
 	 * @example
 	 * ```typescript
@@ -117,7 +117,7 @@ export class BatchRequestManager<T extends ProcessBatchFn> {
 	 * const users = await Promise.all(promises);
 	 * ```
 	 */
-	async get(key: string): Promise<Awaited<ReturnType<T>>[keyof Awaited<ReturnType<T>>]> {
+	async get(key: string): Promise<ValueOf<Awaited<ReturnType<T>>> | null> {
 		const promise = new Promise((resolve, reject) => {
 			this.currentBatch.push({ key, resolve, reject });
 
@@ -130,7 +130,7 @@ export class BatchRequestManager<T extends ProcessBatchFn> {
 			}
 		});
 
-		return promise as Promise<Awaited<ReturnType<T>>[keyof Awaited<ReturnType<T>>]>;
+		return promise as Promise<ValueOf<Awaited<ReturnType<T>>> | null>;
 	}
 
 	private resetBatchTimeout(): void {
@@ -159,13 +159,11 @@ export class BatchRequestManager<T extends ProcessBatchFn> {
 		this.limit(async () => {
 			try {
 				const result = await this.processBatch(batchKeys);
+				if (!(result instanceof Map)) {
+					throw new Error('processBatch must return a Map');
+				}
 				for (const { key, resolve, reject } of batch) {
-					if (result.has(key)) {
-						const data = result.get(key);
-						resolve(data);
-					} else {
-						reject(new Error(`No data found for key: ${key}`));
-					}
+					resolve(result.get(key) ?? null);
 				}
 			} catch (err) {
 				for (const { reject } of batch) {

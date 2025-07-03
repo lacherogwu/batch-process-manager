@@ -120,7 +120,7 @@ describe('BatchRequestManager', () => {
 			expect(secondResults).toEqual(['value4', 'value5']);
 		});
 
-		it('should reject individual requests when key is not found in result', async () => {
+		it('should return null for keys not found in result', async () => {
 			const mockResult = new Map([
 				['key1', 'value1'],
 				// key2 is missing
@@ -134,7 +134,7 @@ describe('BatchRequestManager', () => {
 			vi.advanceTimersByTime(1000);
 
 			await expect(promise1).resolves.toBe('value1');
-			await expect(promise2).rejects.toThrow('No data found for key: key2');
+			await expect(promise2).resolves.toBe(null);
 		});
 
 		it('should reject all requests in batch when processBatch throws an error', async () => {
@@ -208,7 +208,7 @@ describe('BatchRequestManager', () => {
 
 			// Both requests should be processed in the same batch
 			await expect(promise).resolves.toBe('value1');
-			await expect(promise2).rejects.toThrow('No data found for key: key2');
+			await expect(promise2).resolves.toBe(null);
 
 			// Verify they were processed in a single batch
 			expect(mockProcessBatch).toHaveBeenCalledOnce();
@@ -324,7 +324,7 @@ describe('BatchRequestManager', () => {
 			// Advance time to trigger timeout processing
 			vi.advanceTimersByTime(1000);
 
-			await expect(promise).rejects.toThrow('No data found for key: key1');
+			await expect(promise).resolves.toBe(null);
 		});
 
 		it('should handle processBatch returning null/undefined values', async () => {
@@ -345,7 +345,8 @@ describe('BatchRequestManager', () => {
 
 			const results = await Promise.all(promises);
 
-			expect(results).toEqual([null, undefined, '', 0, false]);
+			// Note: undefined values from processBatch are converted to null by the nullish coalescing operator
+			expect(results).toEqual([null, null, '', 0, false]);
 		});
 
 		it('should handle very large batch sizes', async () => {
@@ -578,7 +579,7 @@ describe('BatchRequestManager', () => {
 			expect(mockProcessBatch).toHaveBeenCalledWith([longKey]);
 		});
 
-		it('should handle processBatch that returns non-Map', async () => {
+		it('should throw error when processBatch returns non-Map', async () => {
 			const invalidProcessBatch = vi.fn().mockResolvedValue({ key1: 'value1' }); // Not a Map
 
 			const invalidManager = new BatchRequestManager({
@@ -591,8 +592,8 @@ describe('BatchRequestManager', () => {
 			// Advance time to trigger timeout processing since we have 1 item but batch size is 2
 			vi.advanceTimersByTime(1000);
 
-			// Should throw an error since result.has and result.get are not functions
-			await expect(promise).rejects.toThrow();
+			// Should throw the specific error message for non-Map returns
+			await expect(promise).rejects.toThrow('processBatch must return a Map');
 		});
 
 		it('should handle undefined/null keys gracefully', async () => {
